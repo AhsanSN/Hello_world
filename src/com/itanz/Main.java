@@ -8,11 +8,11 @@ import com.sun.corba.se.spi.orb.Operation;
 import com.sun.deploy.cache.BaseLocalApplicationProperties;
 import jdk.nashorn.internal.objects.NativeMath;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Type;
-import java.time.LocalTime;
+import java.time.*;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -39,7 +39,12 @@ public class Main {
          */
 
         //section_1_lvl2();
-        section_2_lvl2();
+        //section_2_lvl2();
+        //section_3_lvl2();
+        //section_4_lvl2();
+        //section_6_lvl2();
+        //section_7_lvl2();
+        section_8_lvl2();
 
         /**
         Mobile mobile = new Mobile();
@@ -280,7 +285,123 @@ public class Main {
     }
 
     public static void section_3_lvl2() {
+        Box myBox = new Box();
 
+        //string object
+        myBox.set("hi");
+        String a = (String) myBox.get();
+        System.out.println("String object:"+a);
+
+        //int object
+        myBox.set(1);
+        Integer b = (Integer) myBox.get();
+        System.out.println("Integer object:"+b);
+
+        //array object
+        myBox.set(new int[]{1, 2, 3});
+        int[] c = (int[]) myBox.get();
+        System.out.println("Array object:"+c.length);
+    }
+
+    public static void section_4_lvl2() {
+        //lambda expressions
+        ArrayList<Integer> arrL = new ArrayList<Integer>();
+        arrL.add(1);
+        arrL.add(2);
+        arrL.add(3);
+        arrL.add(4);
+
+        arrL.forEach(n -> System.out.println(n));
+
+        //other suggested method (not lambda)
+        arrL.forEach(System.out::println);
+
+        //more lambda - add is a lambda function
+        FuncInter1 add = (int x, int y) -> x + y;
+        System.out.println(add);
+    }
+
+    public static void section_6_lvl2() {
+        try {
+            //simulating runtime err
+            int[] myNumbers = {1, 2, 3};
+            System.out.println(myNumbers[10]);
+        } catch (Exception e) {
+            System.out.println("Something went wrong.");
+        }   finally {
+            System.out.println("finally called");
+        }
+
+        System.out.println("Exit block");
+    }
+
+    public static void section_7_lvl2() {
+
+        DayOfWeek dotw = LocalDate.of(2012, Month.JULY, 9).getDayOfWeek();
+
+        LocalDate date = LocalDate.of(2000, Month.NOVEMBER, 20);
+        TemporalAdjuster adj = TemporalAdjusters.next(DayOfWeek.WEDNESDAY);
+        LocalDate nextWed = date.with(adj);
+        System.out.printf("For the date of %s, the next Wednesday is %s.%n",
+                date, nextWed);
+
+        System.out.println(date+"------"+nextWed);
+
+        YearMonth date1 = YearMonth.now();
+        System.out.printf("%s: %d%n", date1, date1.lengthOfMonth());
+
+        YearMonth date2 = YearMonth.of(2010, Month.FEBRUARY);
+        System.out.printf("%s: %d%n", date2, date2.lengthOfMonth());
+
+        YearMonth date3 = YearMonth.of(2012, Month.FEBRUARY);
+        System.out.printf("%s: %d%n", date3, date3.lengthOfMonth());
+
+        MonthDay date4 = MonthDay.of(Month.JULY, 29);
+        boolean validLeapYear = date4.isValidYear(2010);
+        System.out.println("validLeapYear "+validLeapYear);
+
+        boolean validLeapYear2 = Year.of(2012).isLeap();
+
+        Instant timestamp = Instant.now();
+
+        System.out.println("timestamp"+timestamp);
+        LocalDateTime ldt = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault());
+        System.out.printf("%s %d %d at %d:%d%n", ldt.getMonth(), ldt.getDayOfMonth(),
+                ldt.getYear(), ldt.getHour(), ldt.getMinute());
+    }
+
+    public static void section_8_lvl2() throws IOException {
+        FileInputStream in = null;
+        FileOutputStream out = null;
+
+        try {
+            in = new FileInputStream("inputfile.txt");
+            out = new FileOutputStream("outputfile.txt");
+            int c;
+
+            while ((c = in.read()) != -1) {
+                out.write(c);
+            }
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+        }
+    }
+
+    interface FuncInter1
+    {
+        int operation(int a, int b);
+    }
+
+    public static class Box {
+        private Object object;
+
+        public void set(Object object) { this.object = object; }
+        public Object get() { return object; }
     }
 
 
